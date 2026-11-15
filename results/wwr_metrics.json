@@ -1,0 +1,70 @@
+{
+  "section_a_gt_statistics": {
+    "description": "Ground-truth WWR statistics \u2014 do NOT interpret as model accuracy",
+    "min_gross_px_threshold": 1000,
+    "overall": {
+      "n": 602,
+      "mean": 0.1594,
+      "std": 0.0938,
+      "median": 0.1389,
+      "p25": 0.093,
+      "p75": 0.2103,
+      "min": 0.0,
+      "max": 0.6005
+    },
+    "by_split": {
+      "train": {
+        "n": 481,
+        "mean": 0.1596,
+        "std": 0.0935,
+        "median": 0.1411,
+        "p25": 0.0937,
+        "p75": 0.213,
+        "min": 0.0,
+        "max": 0.6005,
+        "excluded": 0
+      },
+      "val": {
+        "n": 60,
+        "mean": 0.1517,
+        "std": 0.0991,
+        "median": 0.1174,
+        "p25": 0.0842,
+        "p75": 0.2008,
+        "min": 0.0287,
+        "max": 0.3903,
+        "excluded": 0
+      },
+      "test": {
+        "n": 61,
+        "mean": 0.1655,
+        "std": 0.0903,
+        "median": 0.1526,
+        "p25": 0.1059,
+        "p75": 0.2065,
+        "min": 0.0301,
+        "max": 0.4563,
+        "excluded": 0
+      }
+    }
+  },
+  "section_b_pred_vs_gt": {
+    "description": "B2 predicted WWR vs ground-truth WWR \u2014 test set only (61 images)",
+    "formula": "WWR = window_px / (building_px + window_px + door_px)",
+    "exclusion_rule": "Pair excluded if gt_gross_px < 1000 OR pred_gross_px < 1000",
+    "min_gross_px_threshold": 1000,
+    "total_test_images": 61,
+    "included_pairs": 61,
+    "excluded_pairs": 0,
+    "excluded_stems": [],
+    "mae_pp": 7.622,
+    "bias_pp": 7.027,
+    "pearson_r": 0.8661,
+    "pearson_p": 0.0,
+    "r2": -0.1619,
+    "gt_mean_pp": 16.552,
+    "gt_std_pp": 9.032,
+    "pred_mean_pp": 23.579,
+    "pred_std_pp": 12.825
+  }
+}

@@ -1,0 +1,108 @@
+{
+  "evaluation_mode": "full_image_longest_side_1024",
+  "headline_summary": {
+    "miou_10_classes": {
+      "zero_shot": 33.27,
+      "segformer_b0": 48.34,
+      "segformer_b2": 56.22,
+      "gain_b2_zs": 22.95,
+      "gain_b2_b0": 7.88
+    },
+    "miou_9_classes_no_bg": {
+      "zero_shot": 32.76,
+      "segformer_b0": 46.16,
+      "segformer_b2": 54.77,
+      "gain_b2_zs": 22.01,
+      "gain_b2_b0": 8.61
+    }
+  },
+  "per_class": [
+    {
+      "class": "background",
+      "zero_shot": 37.95,
+      "b0_full": 67.97,
+      "b2_full": 69.27,
+      "gain_b2_zs": 31.32,
+      "gain_b2_b0": 1.3
+    },
+    {
+      "class": "building",
+      "zero_shot": 30.47,
+      "b0_full": 66.02,
+      "b2_full": 73.62,
+      "gain_b2_zs": 43.15,
+      "gain_b2_b0": 7.6
+    },
+    {
+      "class": "window",
+      "zero_shot": 41.79,
+      "b0_full": 51.91,
+      "b2_full": 58.48,
+      "gain_b2_zs": 16.69,
+      "gain_b2_b0": 6.57
+    },
+    {
+      "class": "sky",
+      "zero_shot": 58.49,
+      "b0_full": 90.77,
+      "b2_full": 92.33,
+      "gain_b2_zs": 33.84,
+      "gain_b2_b0": 1.56
+    },
+    {
+      "class": "roof",
+      "zero_shot": 2.03,
+      "b0_full": 26.48,
+      "b2_full": 40.49,
+      "gain_b2_zs": 38.46,
+      "gain_b2_b0": 14.01
+    },
+    {
+      "class": "door",
+      "zero_shot": 21.75,
+      "b0_full": 30.9,
+      "b2_full": 40.37,
+      "gain_b2_zs": 18.62,
+      "gain_b2_b0": 9.47
+    },
+    {
+      "class": "tree",
+      "zero_shot": 47.24,
+      "b0_full": 49.47,
+      "b2_full": 49.82,
+      "gain_b2_zs": 2.58,
+      "gain_b2_b0": 0.35
+    },
+    {
+      "class": "people",
+      "zero_shot": 32.42,
+      "b0_full": 21.42,
+      "b2_full": 39.89,
+      "gain_b2_zs": 7.47,
+      "gain_b2_b0": 18.47
+    },
+    {
+      "class": "car",
+      "zero_shot": 58.44,
+      "b0_full": 60.62,
+      "b2_full": 75.51,
+      "gain_b2_zs": 17.07,
+      "gain_b2_b0": 14.89
+    },
+    {
+      "class": "sign",
+      "zero_shot": 2.18,
+      "b0_full": 17.84,
+      "b2_full": 22.45,
+      "gain_b2_zs": 20.27,
+      "gain_b2_b0": 4.61
+    }
+  ],
+  "note_center_crop_512_reference": {
+    "b0_miou_10": 49.18,
+    "b0_miou_9_no_bg": 47.47,
+    "b2_miou_10": 56.66,
+    "b2_miou_9_no_bg": 55.32,
+    "explanation": "Evaluated on 512x512 center crops during training validation epochs."
+  }
+}
