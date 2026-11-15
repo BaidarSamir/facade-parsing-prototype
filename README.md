@@ -157,7 +157,7 @@ A count-based proxy for the correction effort the zero-shot output would require
 
 | Config | Value |
 | :--- | :--- |
-| Dataset | Comprehensive Façade Parsing (CFP / RTFP) — 602 images |
+| Dataset | Comprehensive Façade Parsing (CFP) — 602 images (introduced by Wang et al. alongside RTFP) |
 | Split | 481 train / 60 val / 61 test (reproduced from RTFP 80/10/10 split) |
 | **Backbone** | `nvidia/segformer-b0-finetuned-ade-512-512` and `nvidia/segformer-b2-finetuned-ade-512-512` — ADE20K-pretrained; only the final 150→10 class head is re-initialised |
 | Image preprocessing | Resize longest side to 1024 px; then 512×512 random crop for training |
@@ -338,8 +338,10 @@ pip install -r requirements.txt
 
 ## 10. Credits
 
-**Dataset**
-- **CFP (Comprehensive Façade Parsing)** — introduced in the RTFP paper: Wang et al., *Improving Facade Parsing with Vision Transformers and Line Integration*, Advanced Engineering Informatics, 2024 (arXiv:2309.15523, [wbw520/RTFP](https://github.com/wbw520/RTFP)). Dataset used under its original terms.
+**Dataset & Baseline Method**
+- **CFP Dataset & RTFP Pipeline** — Wang, B., Zhang, J., Zhang, R., Li, Y., Li, L., Nakashima, Y. *Improving facade parsing with vision transformers and line integration*. Advanced Engineering Informatics, 60:102463, 2024. Code and dataset: [github.com/wbw520/RTFP](https://github.com/wbw520/RTFP) ([Osaka University publication](https://im.sanken.osaka-u.ac.jp/en/publication/wang-2024-facade)).
+  - **CFP** (Comprehensive Façade Parsing): the benchmark dataset of 602 street-view images.
+  - **RTFP** (Revision-based Transformer Facade Parsing): the ViT-based architecture and line integration pipeline. Dataset used under its original terms.
 
 **Models**
 - **SegFormer** — Xie et al., *SegFormer: Simple and Efficient Design for Semantic Segmentation with Transformers*, NeurIPS 2021. Weights: `nvidia/segformer-b{0,2}-finetuned-ade-512-512` via HuggingFace Hub.
