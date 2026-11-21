@@ -4,6 +4,14 @@ models/
 *.zip
 third_party/
 
+# ── Bolzano local test (photos, labels, annotations not in repo) ──
+annotations/
+results/bolzano/
+results/bolzano*
+results/figures/bolzano*
+data/bolzano_labels/
+Bolzano pictures/
+
 # ── Python ────────────────────────────────────────────────────────────
 __pycache__/
 *.py[cod]

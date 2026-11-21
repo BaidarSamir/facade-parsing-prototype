@@ -20,6 +20,7 @@ Street-view façade images present severe challenges: perspective distortion, an
 - [Training Details](#5-training-details)
 - [WWR Analysis](#6-window-to-wall-ratio-wwr-analysis)
 - [Limitations](#7-limitations)
+- [Extensions: Local Test (Bolzano Photos)](#extensions)
 - [Project Structure](#8-project-structure)
 - [Quickstart](#9-quickstart--reproducibility)
 - [Credits](#10-credits)
@@ -231,8 +232,48 @@ WWR = window_pixels / (building_pixels + window_pixels + door_pixels)
 - **Zero-shot mask selection:** SAM mask index 2 was used instead of selecting by SAM's predicted scores; candidate mask IoU scores were not compared against ground truth, and overlays were not manually inspected.
 - **Physical WWR not measured:** The computed WWR is a pixel ratio in a perspective image. Without geometric rectification, it is affected by viewing angle, occlusion, and distance. It is a relative indicator, not a physical building parameter.
 - **No comparison with RTFP:** The pipeline was not benchmarked against the RTFP paper baseline (RTFP excludes classes 6–9, so direct comparison requires a separate evaluation run).
-- **Domain shift unknown:** Models were trained and evaluated on CFP only. Performance on imagery from other cities such as Bolzano — with different architectural styles, camera setups, and weather — has not been tested.
+- **Domain shift is only lightly tested:** 17 Bolzano photos were checked by eye and 3 were scored on my own labels (see Extensions). This is too small to estimate performance on Bolzano imagery.
 - **This is not novel research:** The pipeline applies existing models (SegFormer, Grounding DINO, SAM) to an existing dataset (CFP/RTFP). Its value is in the reproducible implementation and evaluation.
+
+---
+
+## Extensions
+
+### Local Test (Bolzano Photos)
+
+17 photos of about 11 buildings taken in Bolzano in November 2026. All 17 were checked by eye, with no labels.
+
+I labelled windows and doors myself in CVAT on 3 of them (bz_10, bz_12, bz_14) — 78 polygons in total, about 10–20 minutes per photo. The B2 model was scored on these 3 photos with `src/score_local.py`. Unlabelled pixels count as not-window and not-door.
+
+**Labelling rule:** A window is the opening, including closed shutters that cover the glass and excluding shutters swung open outside it. A door is a clear door leaf only, not a shopfront.
+
+### Results (pooled across 3 photos)
+
+| Class | IoU | Precision | Recall |
+| :--- | :---: | :---: | :---: |
+| **window** | **0.786** | 0.835 | 0.930 |
+| **door** | **0.428** | 0.431 | 0.983 |
+
+### Per-Photo Window / Door IoU
+
+| Photo | Window IoU | Door IoU |
+| :--- | :---: | :---: |
+| bz_10 | 0.854 | 0.369 |
+| bz_12 | 0.846 | 0.905 |
+| bz_14 | 0.617 | 0.185 |
+
+### Reading
+
+- **On these 3 photos, windows were found well.** Pooled window IoU of 0.786 with high recall (0.93).
+- **Door precision is low**, which appears to come from the model also labelling ground-floor shopfronts and entrances as doors, which I did not label.
+- **bz_14:** The model fills the top window row as one band, where I drew separate windows. Part of the gap is a labelling-convention difference, not only model error.
+
+### Observed Failures (Visual Check Only, No Labels)
+
+Bare trees covering façades, glass walls counted as one large window, ribbon windows merged into bands, tiled roofs missed, yellow objects labelled as sign.
+
+> [!IMPORTANT]
+> **Caveats:** 3 photos, one annotator, my own labelling rule, photos chosen with fewer windows, not comparable with the CFP test scores, no confidence intervals. Bolzano photos, overlays, and labels are **not** included in the repo.
 
 ---
 
@@ -277,7 +318,10 @@ facade-parsing-prototype/
     ├── dataset.py                       # PyTorch Dataset, class weights, augmentation
     ├── train.py                         # CLI training script (mirrors notebook cell 5)
     ├── plot_final_results.py            # Figures: bar chart, confusion matrix, curves
-    └── compute_wwr.py                   # WWR computation — GT stats + pred-vs-GT
+    ├── compute_wwr.py                   # WWR computation — GT stats + pred-vs-GT
+    ├── predict_overlays.py              # B2 overlay predictions on arbitrary photos
+    ├── predict_wwr.py                   # Standalone WWR prediction (Kaggle cell as script)
+    └── score_local.py                   # B2 vs COCO polygon annotations (Bolzano test)
 ```
 
 > **Model weights and data are not committed to the repo.** `segformer_b2_best.pt` is ~104 MB (above GitHub's 100 MB limit). Download trained weights from the Kaggle notebook output (`best_models.zip`) and place in `models/`. Download the CFP dataset from the RTFP paper repository and place in `data/cfp_raw/`.
@@ -285,6 +329,8 @@ facade-parsing-prototype/
 ---
 
 ## 9. Quickstart & Reproducibility
+
+The checkpoints were saved with a newer transformers version. Loading them with an older version fails on layer names; `src/predict_overlays.py` renames the keys when needed.
 
 ### Requirements
 
@@ -341,7 +387,7 @@ pip install -r requirements.txt
 **Dataset & Baseline Method**
 - **CFP Dataset & RTFP Pipeline** — Wang, B., Zhang, J., Zhang, R., Li, Y., Li, L., Nakashima, Y. *Improving facade parsing with vision transformers and line integration*. Advanced Engineering Informatics, 60:102463, 2024. Code and dataset: [github.com/wbw520/RTFP](https://github.com/wbw520/RTFP) ([Osaka University publication](https://im.sanken.osaka-u.ac.jp/en/publication/wang-2024-facade)).
   - **CFP** (Comprehensive Façade Parsing): the benchmark dataset of 602 street-view images.
-  - **RTFP** (Revision-based Transformer Facade Parsing): the ViT-based architecture and line integration pipeline. Dataset used under its original terms.
+  - **RTFP** (Revision-based Transformer Facade Parsing): the ViT-based architecture and line integration pipeline. See the original repository for terms of use.
 
 **Models**
 - **SegFormer** — Xie et al., *SegFormer: Simple and Efficient Design for Semantic Segmentation with Transformers*, NeurIPS 2021. Weights: `nvidia/segformer-b{0,2}-finetuned-ade-512-512` via HuggingFace Hub.
