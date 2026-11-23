@@ -41,7 +41,7 @@ All headline metrics are evaluated on the **61-image held-out test set** (images
 
 > **Note — Training validation numbers (512×512 center-crop):** During training, validation was run on 512×512 center-crops for simplicity. Best crop-based val mIoU (no bg): B2 = 60.19% at epoch 32 (61.54% with background); B0 = 50.73% at epoch 31 (52.60% with background). Headline numbers above are from full-image inference and are the definitive test figures.
 >
-> **Note — Paper comparison:** RTFP (Wang et al.) sets `use_ignore=True`, excluding classes 6–9 (tree, people, car, sign) from evaluation. This pipeline trains and evaluates on all 10 classes; direct mIoU comparisons to RTFP are therefore not meaningful.
+> Note — Paper comparison: The RTFP paper reports mIoU over its nine foreground classes, with a different training setup (MAE-pretrained ViT, 60 epochs, 640 px crops). This pipeline trains and evaluates 10 classes including background, so the numbers are not directly comparable.
 
 ---
 
@@ -231,7 +231,7 @@ WWR = window_pixels / (building_pixels + window_pixels + door_pixels)
 - **Val-based model selection on a small split:** Best checkpoint selected by crop-mIoU on 60 validation images — results are sensitive to this split.
 - **Zero-shot mask selection:** SAM mask index 2 was used instead of selecting by SAM's predicted scores; candidate mask IoU scores were not compared against ground truth, and overlays were not manually inspected.
 - **Physical WWR not measured:** The computed WWR is a pixel ratio in a perspective image. Without geometric rectification, it is affected by viewing angle, occlusion, and distance. It is a relative indicator, not a physical building parameter.
-- **No comparison with RTFP:** The pipeline was not benchmarked against the RTFP paper baseline (RTFP excludes classes 6–9, so direct comparison requires a separate evaluation run).
+- **No same-protocol comparison with RTFP:** The pipeline was not benchmarked against the RTFP baseline under the same protocol; training setups differ (MAE-pretrained ViT, 60 epochs, 640 px crops).
 - **Domain shift is only lightly tested:** 17 Bolzano photos were checked by eye and 3 were scored on my own labels (see Extensions). This is too small to estimate performance on Bolzano imagery.
 - **This is not novel research:** The pipeline applies existing models (SegFormer, Grounding DINO, SAM) to an existing dataset (CFP/RTFP). Its value is in the reproducible implementation and evaluation.
 
@@ -385,14 +385,19 @@ pip install -r requirements.txt
 ## 10. Credits
 
 **Dataset & Baseline Method**
-- **CFP Dataset & RTFP Pipeline** — Wang, B., Zhang, J., Zhang, R., Li, Y., Li, L., Nakashima, Y. *Improving facade parsing with vision transformers and line integration*. Advanced Engineering Informatics, 60:102463, 2024. Code and dataset: [github.com/wbw520/RTFP](https://github.com/wbw520/RTFP) ([Osaka University publication](https://im.sanken.osaka-u.ac.jp/en/publication/wang-2024-facade)).
+- **CFP Dataset & RTFP Pipeline** — Wang, B., Zhang, J., Zhang, R., Li, Y., Li, L., Nakashima, Y. *Improving facade parsing with vision transformers and line integration*. Advanced Engineering Informatics, 60:102463, 2024. arXiv: [2309.15523](https://arxiv.org/abs/2309.15523). Code and dataset: [github.com/wbw520/RTFP](https://github.com/wbw520/RTFP) ([Osaka University publication](https://im.sanken.osaka-u.ac.jp/en/publication/wang-2024-facade)).
   - **CFP** (Comprehensive Façade Parsing): the benchmark dataset of 602 street-view images.
   - **RTFP** (Revision-based Transformer Facade Parsing): the ViT-based architecture and line integration pipeline. See the original repository for terms of use.
+
+> **Dataset provenance:** CFP has 602 street-view images at 2560x1440, from six cities: Osaka, Tokyo, Toronto, Shanghai, Nanjing, Nanchang. The paper lists 9 classes: building, window, door, roof, tree, sky, people, car, sign. The background class (0) is added in this project, so this project uses 10 classes. The paper says the annotation was done at instance-mask level by two annotators. It gives no credentials and no agreement check that I could find. The masks used here are the semantic masks from the dataset release, resized to a longest side of 1024 px.
 
 **Models**
 - **SegFormer** — Xie et al., *SegFormer: Simple and Efficient Design for Semantic Segmentation with Transformers*, NeurIPS 2021. Weights: `nvidia/segformer-b{0,2}-finetuned-ade-512-512` via HuggingFace Hub.
 - **Grounding DINO** — Liu et al., *Grounding DINO: Marrying DINO with Grounded Pre-Training for Open-Set Object Detection*, ECCV 2024. Weights: `IDEA-Research/grounding-dino-base`.
 - **SAM** — Kirillov et al., *Segment Anything*, ICCV 2023. Weights: `facebook/sam-vit-base`.
+
+**References**
+- **CVAT** (Computer Vision Annotation Tool) — annotation tool.
 
 **Infrastructure**
 - Training on [Kaggle](https://www.kaggle.com) (T4 GPU, free tier).

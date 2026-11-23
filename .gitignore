@@ -4,6 +4,11 @@ models/
 *.zip
 third_party/
 
+# ── Interview deck (contains Bolzano photos, stays local) ────────
+deck/
+build_*.py
+engine.py
+
 # ── Bolzano local test (photos, labels, annotations not in repo) ──
 annotations/
 results/bolzano/
@@ -20,6 +25,15 @@ __pycache__/
 *.egg-info/
 dist/
 build/
+*.log
+.env
+.env.*
+
+# ── Model & notebook artifacts ───────────────────────────────────
+*.pt
+*.pth
+*.ckpt
+*.onnx
 
 # ── Jupyter ───────────────────────────────────────────────────────────
 .ipynb_checkpoints/
